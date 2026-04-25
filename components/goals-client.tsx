@@ -264,7 +264,7 @@ export function GoalsClient({ initialGoals }: { initialGoals: Goal[] }) {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          {goals.length} actief{goals.length !== 1 ? 'e' : ''} doel{goals.length !== 1 ? 'en' : ''}
+          {goals.length === 1 ? '1 actief doel' : `${goals.length} actieve doelen`}
         </p>
         <Button onClick={() => setDialogOpen(true)} size="sm" className="flex items-center gap-1.5">
           <Plus size={14} />

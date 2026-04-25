@@ -10,6 +10,7 @@ import {
   PenLine,
   BarChart2,
   Target,
+  BookOpen,
   Sun,
   Moon,
   Menu,
@@ -20,8 +21,9 @@ import { LogoMark } from './logo';
 const NAV = [
   { href: '/dashboard', label: 'Overzicht', icon: LayoutDashboard },
   { href: '/log', label: 'Dagboek', icon: PenLine },
-  { href: '/history', label: 'Historiek', icon: BarChart2 },
+  { href: '/history', label: 'Mijn ontwikkeling', icon: BarChart2 },
   { href: '/goals', label: 'Doelen', icon: Target },
+  { href: '/uitleg', label: 'Uitleg', icon: BookOpen },
 ];
 
 function ThemeToggle() {

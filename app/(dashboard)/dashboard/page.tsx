@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { InsightCard } from '@/components/insight-card';
 import { MoodDrivers } from '@/components/mood-drivers';
+import { HabitImpact } from '@/components/habit-impact';
 import { PILLARS } from '@/lib/pillars';
-import { berekenAlleCorrelaties } from '@/lib/patterns';
+import { berekenAlleCorrelaties, berekenGewoontesEffect } from '@/lib/patterns';
 import { type Goal, type DailyLog } from '@/types/database';
 import { type PijlerId } from '@/lib/pillars';
 import { Flame, TrendingUp, PenLine, CheckCircle2 } from 'lucide-react';
@@ -116,6 +117,7 @@ export default async function DashboardPage() {
   // Use last 30 logs for correlations, last 7 for display
   const last7 = recentLogs.slice(0, 7);
   const correlaties = berekenAlleCorrelaties(recentLogs);
+  const gewoontesEffect = berekenGewoontesEffect(recentLogs);
 
   const naam = profile?.naam ?? 'daar';
   const today = new Date().toLocaleDateString('nl-NL', {
@@ -241,6 +243,9 @@ export default async function DashboardPage() {
           </Button>
         </div>
       )}
+
+      {/* Habit impact */}
+      <HabitImpact effecten={gewoontesEffect} />
 
       {/* Mood drivers — shown when enough data */}
       {correlaties.length > 0 && (

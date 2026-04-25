@@ -7,7 +7,7 @@ export default async function HistoryPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Historiek</h1>
+        <h1 className="text-2xl font-bold text-foreground">Mijn ontwikkeling</h1>
         <p className="text-muted-foreground text-sm mt-0.5">Jouw welzijn over tijd</p>
       </div>
       <HistoryView logs={logs} />

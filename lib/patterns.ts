@@ -109,6 +109,42 @@ const ACTIES: Record<PijlerId, string> = {
   meaning: 'Doe vandaag iets kleins voor iemand anders, zonder dat erom gevraagd werd.',
 };
 
+export interface GewoontesEffectData {
+  pillar: PijlerId;
+  gemDoen: number;
+  gemNietDoen: number;
+  verschil: number;
+  aantalDoen: number;
+}
+
+export function berekenGewoontesEffect(logs: DailyLog[]): GewoontesEffectData[] {
+  if (logs.length < 5) return [];
+
+  return PILLARS.map((pillar) => {
+    const gedaan = logs.filter(
+      (l) => (l.gedragschecks as Record<string, boolean>)?.[pillar.id] === true
+    );
+    const nietGedaan = logs.filter(
+      (l) => (l.gedragschecks as Record<string, boolean>)?.[pillar.id] !== true
+    );
+    if (gedaan.length < 3 || nietGedaan.length < 2) return null;
+
+    const gemDoen = gedaan.reduce((a, l) => a + l.stemming, 0) / gedaan.length;
+    const gemNietDoen = nietGedaan.reduce((a, l) => a + l.stemming, 0) / nietGedaan.length;
+    const verschil = gemDoen - gemNietDoen;
+
+    return {
+      pillar: pillar.id,
+      gemDoen: Math.round(gemDoen * 10) / 10,
+      gemNietDoen: Math.round(gemNietDoen * 10) / 10,
+      verschil: Math.round(verschil * 10) / 10,
+      aantalDoen: gedaan.length,
+    };
+  })
+    .filter((e): e is GewoontesEffectData => e !== null && Math.abs(e.verschil) >= 0.5)
+    .sort((a, b) => b.verschil - a.verschil);
+}
+
 export function genereerAanbeveling(logs: DailyLog[]): AanbevelingData | null {
   if (logs.length < 3) return null;
   const recent = logs.slice(0, 7);
