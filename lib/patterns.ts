@@ -117,6 +117,38 @@ export interface GewoontesEffectData {
   aantalDoen: number;
 }
 
+export interface PijlerTrendData {
+  pillar: PijlerId;
+  huidigGem: number;
+  vorigeGem: number | null;
+  verschil: number | null;
+  richting: 'omhoog' | 'omlaag' | 'stabiel' | 'nieuw';
+}
+
+export function berekenPijlerTrends(huidig: DailyLog[], vorig: DailyLog[]): PijlerTrendData[] {
+  return PILLARS.map((pillar) => {
+    const hScores = pillarScores(huidig, pillar.id);
+    const vScores = vorig.length > 0 ? pillarScores(vorig, pillar.id) : [];
+
+    const huidigGem =
+      Math.round((hScores.reduce((a, b) => a + b, 0) / Math.max(hScores.length, 1)) * 10) / 10;
+    const vorigeGem =
+      vScores.length > 0
+        ? Math.round((vScores.reduce((a, b) => a + b, 0) / vScores.length) * 10) / 10
+        : null;
+    const verschil =
+      vorigeGem !== null ? Math.round((huidigGem - vorigeGem) * 10) / 10 : null;
+
+    const richting: PijlerTrendData['richting'] =
+      verschil === null ? 'nieuw'
+      : verschil > 0.4 ? 'omhoog'
+      : verschil < -0.4 ? 'omlaag'
+      : 'stabiel';
+
+    return { pillar: pillar.id, huidigGem, vorigeGem, verschil, richting };
+  }).sort((a, b) => b.huidigGem - a.huidigGem);
+}
+
 export function berekenGewoontesEffect(logs: DailyLog[]): GewoontesEffectData[] {
   if (logs.length < 5) return [];
 

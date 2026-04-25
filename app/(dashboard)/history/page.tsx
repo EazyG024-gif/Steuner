@@ -2,7 +2,7 @@ import { getRecentLogs } from '@/lib/actions/log';
 import { HistoryView } from '@/components/history-view';
 
 export default async function HistoryPage() {
-  const logs = await getRecentLogs(30);
+  const logs = await getRecentLogs(60);
 
   return (
     <div className="space-y-6">
