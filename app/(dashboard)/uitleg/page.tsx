@@ -12,13 +12,14 @@ export default function UitlegPage() {
       </div>
 
       {/* Intro animatie */}
-      <div className="bg-card border border-border rounded-2xl shadow-card overflow-hidden">
+      <div className="-mx-4 bg-card border-y border-border shadow-card overflow-hidden lg:-mx-0 lg:rounded-2xl lg:border">
         <div className="aspect-video w-full">
           <iframe
             src="/steuner-intro.html"
             className="w-full h-full border-0"
             title="Steuner introductie"
             allow="autoplay"
+            allowFullScreen
           />
         </div>
       </div>
