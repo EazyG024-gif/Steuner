@@ -1,5 +1,5 @@
 import { PILLARS } from '@/lib/pillars';
-import { Play, Mail, MessageCircle } from 'lucide-react';
+import { Mail, MessageCircle } from 'lucide-react';
 
 export default function UitlegPage() {
   return (
@@ -11,13 +11,15 @@ export default function UitlegPage() {
         </p>
       </div>
 
-      {/* Video placeholder */}
+      {/* Intro animatie */}
       <div className="bg-card border border-border rounded-2xl shadow-card overflow-hidden">
-        <div className="aspect-video bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-950/40 dark:to-indigo-950/40 flex flex-col items-center justify-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-elevated cursor-pointer hover:scale-105 transition-transform">
-            <Play size={24} className="text-primary-foreground ml-1" fill="currentColor" />
-          </div>
-          <p className="text-sm text-muted-foreground font-medium">Uitlegvideo komt binnenkort</p>
+        <div className="aspect-video w-full">
+          <iframe
+            src="/steuner-intro.html"
+            className="w-full h-full border-0"
+            title="Steuner introductie"
+            allow="autoplay"
+          />
         </div>
       </div>
 
