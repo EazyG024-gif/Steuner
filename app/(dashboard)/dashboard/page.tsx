@@ -272,13 +272,6 @@ export default async function DashboardPage() {
               const dateStr = d.toISOString().split('T')[0];
               const log = last7.find((l) => l.datum === dateStr);
 
-              // Count how many goal checks were done that day
-              const goalChecks = goals.filter(
-                (g) =>
-                  log &&
-                  (log.gedragschecks as Record<string, boolean>)?.[g.pijler as PijlerId] === true
-              ).length;
-
               return (
                 <div key={dateStr} className="flex flex-col items-center gap-1.5 flex-1">
                   <div
