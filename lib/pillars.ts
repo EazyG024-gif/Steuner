@@ -1,0 +1,58 @@
+export const PILLARS = [
+  {
+    id: 'savor',
+    label: 'Savoring',
+    emoji: '✨',
+    color: '#F5C842',
+    desc: 'Bewust genieten van kleine momenten',
+    scoreVraag: 'Hoe bewust heb je vandaag genoten?',
+    checkVraag: 'Heb je een moment écht stilgestaan bij iets moois?',
+  },
+  {
+    id: 'connect',
+    label: 'Verbinding',
+    emoji: '🤝',
+    color: '#4ECDC4',
+    desc: 'Echte sociale interactie',
+    scoreVraag: 'Hoe betekenisvol was je sociale contact?',
+    checkVraag: 'Had je een gesprek dat verder ging dan koetjes en kalfjes?',
+  },
+  {
+    id: 'body',
+    label: 'Lichaam',
+    emoji: '🏃',
+    color: '#FF6B6B',
+    desc: 'Bewegen en slaap',
+    scoreVraag: 'Hoe goed heb je voor je lichaam gezorgd?',
+    checkVraag: 'Bewogen én op tijd geslapen?',
+  },
+  {
+    id: 'flow',
+    label: 'Flow',
+    emoji: '🎯',
+    color: '#A78BFA',
+    desc: 'Opgaan in een activiteit',
+    scoreVraag: 'Hoe vaak was je volledig geabsorbeerd?',
+    checkVraag: 'Was er een activiteit waarbij je de tijd vergat?',
+  },
+  {
+    id: 'gratitude',
+    label: 'Dankbaarheid',
+    emoji: '🙏',
+    color: '#34D399',
+    desc: 'Aandacht voor wat werkt',
+    scoreVraag: 'Hoe sterk was je focus op wat goed ging?',
+    checkVraag: 'Heb je drie concrete dingen opgeschreven?',
+  },
+  {
+    id: 'meaning',
+    label: 'Betekenis',
+    emoji: '🌱',
+    color: '#FB923C',
+    desc: 'Bijdragen aan iets groters',
+    scoreVraag: 'Hoe zinvol voelde je dag?',
+    checkVraag: 'Heb je iets gedaan voor iemand anders of iets groters?',
+  },
+] as const;
+
+export type PijlerId = (typeof PILLARS)[number]['id'];
