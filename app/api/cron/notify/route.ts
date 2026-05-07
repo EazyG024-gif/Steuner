@@ -14,11 +14,16 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const today = new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const today = now.toLocaleDateString('nl-NL', { timeZone: 'Europe/Amsterdam' }).split('-').reverse().join('-');
+  const currentHour = parseInt(
+    new Intl.DateTimeFormat('nl-NL', { timeZone: 'Europe/Amsterdam', hour: 'numeric', hour12: false }).format(now)
+  );
 
   const { data: subs } = await supabaseAdmin
     .from('push_subscriptions')
-    .select('*');
+    .select('*')
+    .eq('reminder_hour', currentHour);
 
   if (!subs?.length) return NextResponse.json({ sent: 0 });
 

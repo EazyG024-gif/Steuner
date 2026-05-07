@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Bell, BellOff } from 'lucide-react';
+import { Bell, BellOff, Check } from 'lucide-react';
 import { Button } from './ui/button';
 
 function urlBase64ToUint8Array(base64String: string) {
@@ -11,11 +11,16 @@ function urlBase64ToUint8Array(base64String: string) {
   return Uint8Array.from(Array.from(raw).map((c) => c.charCodeAt(0)));
 }
 
+const HOURS = Array.from({ length: 17 }, (_, i) => i + 7); // 7–23
+
 export function NotificationPrompt() {
   const [supported, setSupported] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission>('default');
   const [subscribed, setSubscribed] = useState(false);
+  const [reminderHour, setReminderHour] = useState(20);
+  const [savedHour, setSavedHour] = useState(20);
   const [loading, setLoading] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) return;
@@ -45,9 +50,10 @@ export function NotificationPrompt() {
       await fetch('/api/push/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(sub.toJSON()),
+        body: JSON.stringify({ ...sub.toJSON(), reminder_hour: reminderHour }),
       });
 
+      setSavedHour(reminderHour);
       setSubscribed(true);
     } catch (e) {
       console.error(e);
@@ -75,37 +81,89 @@ export function NotificationPrompt() {
     }
   }
 
+  async function updateTime() {
+    setLoading(true);
+    try {
+      await fetch('/api/push/update-time', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reminder_hour: reminderHour }),
+      });
+      setSavedHour(reminderHour);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   if (!supported) return null;
 
   return (
-    <div className="flex items-center gap-3 p-3 rounded-xl bg-muted">
-      <div className="p-2 rounded-lg bg-violet-100 dark:bg-violet-950/40 shrink-0">
-        {subscribed ? (
-          <Bell size={16} className="text-primary" />
-        ) : (
-          <BellOff size={16} className="text-muted-foreground" />
+    <div className="space-y-3">
+      <div className="flex items-center gap-3 p-3 rounded-xl bg-muted">
+        <div className="p-2 rounded-lg bg-violet-100 dark:bg-violet-950/40 shrink-0">
+          {subscribed ? (
+            <Bell size={16} className="text-primary" />
+          ) : (
+            <BellOff size={16} className="text-muted-foreground" />
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-foreground">Dagelijkse herinnering</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {permission === 'denied'
+              ? 'Geblokkeerd in browserinstellingen'
+              : subscribed
+              ? `Ingeschakeld — elke dag om ${savedHour}:00`
+              : 'Ontvang een seintje voor je check-in'}
+          </p>
+        </div>
+        {permission !== 'denied' && (
+          <Button
+            size="sm"
+            variant={subscribed ? 'outline' : 'default'}
+            onClick={subscribed ? disable : enable}
+            disabled={loading}
+            className="shrink-0"
+          >
+            {subscribed ? 'Uit' : 'Aan'}
+          </Button>
         )}
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-foreground">Dagelijkse herinnering</p>
-        <p className="text-xs text-muted-foreground mt-0.5">
-          {permission === 'denied'
-            ? 'Geblokkeerd in browserinstellingen'
-            : subscribed
-            ? 'Ingeschakeld — elke avond rond 20:00'
-            : 'Ontvang een seintje voor je check-in'}
-        </p>
-      </div>
-      {permission !== 'denied' && (
-        <Button
-          size="sm"
-          variant={subscribed ? 'outline' : 'default'}
-          onClick={subscribed ? disable : enable}
-          disabled={loading}
-          className="shrink-0"
-        >
-          {subscribed ? 'Uit' : 'Aan'}
-        </Button>
+
+      {/* Time picker — shown when subscribed or when enabling */}
+      {(subscribed || permission === 'granted') && permission !== 'denied' && (
+        <div className="flex items-center gap-3 px-3">
+          <span className="text-xs text-muted-foreground">Tijdstip</span>
+          <select
+            value={reminderHour}
+            onChange={(e) => setReminderHour(Number(e.target.value))}
+            className="flex-1 text-sm bg-muted border border-border rounded-lg px-3 py-1.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+          >
+            {HOURS.map((h) => (
+              <option key={h} value={h}>
+                {String(h).padStart(2, '0')}:00
+              </option>
+            ))}
+          </select>
+          {subscribed && reminderHour !== savedHour && (
+            <Button
+              size="sm"
+              onClick={updateTime}
+              disabled={loading}
+              className="shrink-0 flex items-center gap-1.5"
+            >
+              {saved ? <Check size={13} /> : null}
+              Opslaan
+            </Button>
+          )}
+          {saved && reminderHour === savedHour && (
+            <span className="text-xs text-emerald-600 flex items-center gap-1">
+              <Check size={12} /> Opgeslagen
+            </span>
+          )}
+        </div>
       )}
     </div>
   );

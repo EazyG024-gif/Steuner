@@ -7,14 +7,18 @@ export async function POST(req: Request) {
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await req.json();
-  const { endpoint, keys } = body as { endpoint: string; keys: { p256dh: string; auth: string } };
+  const { endpoint, keys, reminder_hour = 20 } = body as {
+    endpoint: string;
+    keys: { p256dh: string; auth: string };
+    reminder_hour?: number;
+  };
 
   if (!endpoint || !keys?.p256dh || !keys?.auth) {
     return NextResponse.json({ error: 'Invalid subscription' }, { status: 400 });
   }
 
   await supabaseAdmin.from('push_subscriptions').upsert(
-    { user_id: userId, endpoint, p256dh: keys.p256dh, auth: keys.auth },
+    { user_id: userId, endpoint, p256dh: keys.p256dh, auth: keys.auth, reminder_hour },
     { onConflict: 'endpoint' }
   );
 
