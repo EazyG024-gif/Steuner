@@ -97,7 +97,7 @@ export function NotificationPrompt() {
     }
   }
 
-  if (!supported) return null;
+  if (!supported) return <p className="text-xs text-muted-foreground">v3 – niet ondersteund in deze browser</p>;
 
   return (
     <div className="space-y-3">
