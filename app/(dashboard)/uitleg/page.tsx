@@ -1,5 +1,6 @@
 import { PILLARS } from '@/lib/pillars';
 import { Mail, MessageCircle } from 'lucide-react';
+import { NotificationPrompt } from '@/components/notification-prompt';
 
 export default function UitlegPage() {
   return (
@@ -80,6 +81,12 @@ export default function UitlegPage() {
             </li>
           ))}
         </ol>
+      </div>
+
+      {/* Meldingen */}
+      <div className="bg-card border border-border rounded-2xl shadow-card p-5">
+        <h2 className="font-semibold text-foreground mb-4">Meldingen</h2>
+        <NotificationPrompt />
       </div>
 
       {/* Contact */}
