@@ -132,8 +132,8 @@ export function NotificationPrompt() {
         )}
       </div>
 
-      {/* Time picker — shown when subscribed or when enabling */}
-      {(subscribed || permission === 'granted') && permission !== 'denied' && (
+      {/* Time picker — always shown when push is supported */}
+      {permission !== 'denied' && (
         <div className="flex items-center gap-3 px-3">
           <span className="text-xs text-muted-foreground">Tijdstip</span>
           <select
